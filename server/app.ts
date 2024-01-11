@@ -15,7 +15,7 @@ app.use(cookieParser())
 app.use(cors({ origin: process.env.ORIGIN }))
 
 // testing api
-app.get('/api/test', (req, res, next) => {
+app.get('/test', (req, res, next) => {
   res.status(200).json({
     success: true,
     message: 'Api is working',
@@ -24,8 +24,7 @@ app.get('/api/test', (req, res, next) => {
 
 // unknown route
 app.all('*', (req, res, next) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found',
-  })
+  const err = new Error(`Route ${req.originalUrl} not found!`) as any
+  err.statusCode = 404
+  next(err)
 })
