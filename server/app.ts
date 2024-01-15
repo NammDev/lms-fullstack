@@ -3,6 +3,8 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 require('dotenv').config()
 
+import { ErrorMiddleware } from './middleware/error'
+
 export const app = express()
 
 // body parse
@@ -28,3 +30,5 @@ app.all('*', (req, res, next) => {
   err.statusCode = 404
   next(err)
 })
+
+app.use(ErrorMiddleware)
