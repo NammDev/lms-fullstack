@@ -9,4 +9,6 @@ interface EmailOptions {
   data: { [key: string]: any }
 }
 
-const sendMail = async (options: EmailOptions): Promise<void> => {}
+const sendMail = async (options: EmailOptions): Promise<void> => {
+  // uptodate
+}
