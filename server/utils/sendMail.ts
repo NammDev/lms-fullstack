@@ -10,5 +10,5 @@ interface EmailOptions {
 }
 
 const sendMail = async (options: EmailOptions): Promise<void> => {
-  // uptodate
+  // sau tat ca
 }
