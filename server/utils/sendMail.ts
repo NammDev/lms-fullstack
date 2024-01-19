@@ -9,6 +9,4 @@ interface EmailOptions {
   data: { [key: string]: any }
 }
 
-const sendMail = async (options: EmailOptions): Promise<void> => {
-  // sau tat ca
-}
+const sendMail = async (options: EmailOptions): Promise<void> => {}
