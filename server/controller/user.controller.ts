@@ -30,8 +30,7 @@ export const registrationUser = CatchAsyncError(
         email,
         password,
       }
-      const activationToken = createActivationToken(user)
-      const activationCode = activationToken.activationCode
+      const { token, activationCode } = createActivationToken(user)
       const data = { user: { name: user.name }, activationCode }
       // const html = await ejs.renderFile(path.join(__dirname, '../mails/activation-mall.ejs'), data)
 
@@ -45,7 +44,7 @@ export const registrationUser = CatchAsyncError(
         res.status(201).json({
           success: true,
           message: `Please check your email ${user.email} to activate your account!`,
-          activationToken: activationToken.token,
+          activationToken: token,
         })
       } catch (error: any) {
         return next(new ErrorHandler(400, error.message))
@@ -73,3 +72,44 @@ export const createActivationToken = (user: IRegistrationBody): IActivationToken
   )
   return { token, activationCode }
 }
+
+// active user
+interface IActivationRequest {
+  activation_token: string
+  activation_code: string
+}
+
+export const activateUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { activation_token, activation_code } = req.body as IActivationRequest
+      const decoded = jwt.verify(activation_token, process.env.ACTIVATION_SECRET_KEY)
+      const { user, activationCode } = decoded as {
+        user: IRegistrationBody
+        activationCode: string
+      }
+      if (activation_code !== activationCode) {
+        return next(new ErrorHandler(400, 'Incorrect activation code'))
+      }
+
+      const { name, email, password } = user
+      const existUser = await userModel.findOne({ email })
+
+      if (existUser) {
+        return next(new ErrorHandler(400, 'Email already exists'))
+      }
+
+      const newUser = await userModel.create({
+        name,
+        email,
+        password,
+      })
+      res.status(201).json({
+        success: true,
+        message: 'Account has been activated!',
+      })
+    } catch (error: any) {
+      return next(new ErrorHandler(400, error.message))
+    }
+  }
+)
