@@ -33,12 +33,12 @@ export const registrationUser = CatchAsyncError(
       const activationToken = createActivationToken(user)
       const activationCode = activationToken.activationCode
       const data = { user: { name: user.name }, activationCode }
-      const html = await ejs.renderFile(path.join(__dirname, '../mails/activation-mall.ejs'), data)
+      // const html = await ejs.renderFile(path.join(__dirname, '../mails/activation-mall.ejs'), data)
 
       try {
         await sendMail({
           email: user.email,
-          subject: 'Active Your Account',
+          subject: 'Active Your Account in NammDev',
           template: 'activation-mall.ejs',
           data,
         })

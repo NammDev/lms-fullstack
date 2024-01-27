@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 require('dotenv').config()
+import userRouter from './route/user.route'
 
 import { ErrorMiddleware } from './middleware/error'
 
@@ -15,6 +16,9 @@ app.use(cookieParser())
 
 // cors -> cross origin resource sharing
 app.use(cors({ origin: process.env.ORIGIN }))
+
+// routes
+app.use('/api/v1', userRouter)
 
 // testing api
 app.get('/test', (req, res, next) => {
