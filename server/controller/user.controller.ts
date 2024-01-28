@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, json } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import userModel from '../models/user.model'
 import { IUser } from '../models/user.model'
 import ErrorHandler from '../utils/ErrorHandler'
@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken'
 import ejs from 'ejs'
 import path from 'path'
 import sendMail from '../utils/sendMail'
+import { sendToken } from '../utils/jwt'
 require('dotenv').config()
 
 // register User
@@ -109,6 +110,49 @@ export const activateUser = CatchAsyncError(
         message: 'Account has been activated!',
       })
     } catch (error: any) {
+      return next(new ErrorHandler(400, error.message))
+    }
+  }
+)
+
+// Login User
+interface ILoginRequest {
+  email: string
+  password: string
+}
+
+export const loginUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password } = req.body as ILoginRequest
+      if (!email || !password) {
+        return next(new ErrorHandler(400, 'Please enter your email and password'))
+      }
+      const user = await userModel.findOne({ email }).select('+password')
+      if (!user) {
+        return next(new ErrorHandler(400, 'Invalid email or password'))
+      }
+      const isPasswordMatch = await user.comparePassword(password)
+      if (!isPasswordMatch) {
+        return next(new ErrorHandler(400, 'Invalid email or password'))
+      }
+      sendToken(user, 200, res)
+    } catch (error) {
+      return next(new ErrorHandler(400, error.message))
+    }
+  }
+)
+
+export const logoutUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.cookie('accessToken', '', { maxAge: 1 })
+      res.cookie('refreshToken', '', { maxAge: 1 })
+      res.status(200).json({
+        success: true,
+        message: 'Logged out successfully!',
+      })
+    } catch (error) {
       return next(new ErrorHandler(400, error.message))
     }
   }
