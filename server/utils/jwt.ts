@@ -15,7 +15,7 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const accessToken = user.signAccessToken()
   const refreshToken = user.signRefreshToken()
 
-  // upload sessions to redis
+  // upload sessions to redis (upstash)
   redis.set(user._id, JSON.stringify(user) as any)
 
   // parse env variables to integrates with fallback values
