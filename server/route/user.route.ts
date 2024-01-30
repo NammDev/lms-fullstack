@@ -1,3 +1,4 @@
+import { getUserInfo } from './../controller/user.controller'
 import express from 'express'
 import {
   activateUser,
@@ -15,5 +16,7 @@ userRouter.post('/activate-user', activateUser)
 userRouter.post('/login', loginUser)
 userRouter.get('/logout', isAuthenticated, logoutUser)
 userRouter.get('/refresh-token', updateAccessToken)
+
+userRouter.get('/me', isAuthenticated, getUserInfo)
 
 export default userRouter
