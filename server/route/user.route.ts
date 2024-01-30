@@ -1,4 +1,4 @@
-import { getUserInfo, socialAuth } from './../controller/user.controller'
+import { getUserInfo, socialAuth, updateUserInfo } from './../controller/user.controller'
 import express from 'express'
 import {
   activateUser,
@@ -19,5 +19,7 @@ userRouter.get('/refresh-token', updateAccessToken)
 
 userRouter.get('/me', isAuthenticated, getUserInfo)
 userRouter.post('/social-auth', socialAuth)
+
+userRouter.put('/update-profile', isAuthenticated, updateUserInfo)
 
 export default userRouter
