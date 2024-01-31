@@ -10,6 +10,7 @@ import sendMail from '../utils/sendMail'
 import { accessTokenOptions, refreshTokenOptions, sendToken } from '../utils/jwt'
 import { redis } from '../utils/redis'
 import { getUserById } from '../services/user.service'
+import cloudinary from 'cloudinary'
 require('dotenv').config()
 
 // register User
@@ -296,6 +297,42 @@ export const updatePassword = CatchAsyncError(
       }
       user.password = newPassword
       await user.save()
+      await redis.set(req.user._id, JSON.stringify(user) as any)
+      res.status(200).json({
+        success: true,
+        user,
+      })
+    } catch (error: any) {
+      return next(new ErrorHandler(400, error.message))
+    }
+  }
+)
+
+// update profile picture
+interface IUpdateProfilePicture {
+  avatar: string
+}
+
+export const updateProfilePicture = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { avatar } = req.body as IUpdateProfilePicture
+      const userId = req.user?._id
+      const user = await userModel.findById(userId)
+      if (user && avatar) {
+        user?.avatar?.public_id && (await cloudinary.v2.uploader.destroy(user?.avatar?.public_id))
+        // upload the new image
+        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+          folder: 'avatars',
+          width: 150,
+        })
+        user.avatar = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        }
+      }
+      await user?.save()
+      await redis.set(userId as string, JSON.stringify(user) as any)
       res.status(200).json({
         success: true,
         user,

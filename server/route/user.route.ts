@@ -2,6 +2,7 @@ import {
   getUserInfo,
   socialAuth,
   updatePassword,
+  updateProfilePicture,
   updateUserInfo,
 } from './../controller/user.controller'
 import express from 'express'
@@ -27,5 +28,6 @@ userRouter.post('/social-auth', socialAuth)
 
 userRouter.put('/update-profile', isAuthenticated, updateUserInfo)
 userRouter.put('/update-password', isAuthenticated, updatePassword)
+userRouter.put('/update-avatar', isAuthenticated, updateProfilePicture)
 
 export default userRouter
