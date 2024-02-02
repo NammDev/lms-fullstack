@@ -5,6 +5,7 @@ require('dotenv').config()
 import userRouter from './route/user.route'
 
 import { ErrorMiddleware } from './middleware/error'
+import courseRouter from './route/course.route'
 
 export const app = express()
 
@@ -19,6 +20,7 @@ app.use(cors({ origin: process.env.ORIGIN }))
 
 // routes
 app.use('/api/v1', userRouter)
+app.use('/api/v1', courseRouter)
 
 // testing api
 app.get('/test', (req, res, next) => {
