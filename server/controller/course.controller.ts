@@ -6,6 +6,7 @@ import ErrorHandler from '../utils/ErrorHandler'
 import { createCourse } from '../services/course.service'
 import courseModel from '../models/course.model'
 import { redis } from '../utils/redis'
+import mongoose from 'mongoose'
 
 require('dotenv').config()
 
@@ -137,6 +138,51 @@ export const getCourseByUser = CatchAsyncError(
       res.status(200).json({
         success: true,
         content,
+      })
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message))
+    }
+  }
+)
+
+// add questions in course
+interface IAddQuestionData {
+  question: string
+  courseId: string
+  contentId: string
+}
+
+export const addQuestion = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { question, courseId, contentId } = req.body as IAddQuestionData
+      const course = await courseModel.findById(courseId)
+
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return next(new ErrorHandler(400, 'Invalid content ID 1'))
+      }
+
+      const courseContent = course?.courseData.find((item: any) => item._id.equals(contentId))
+      if (!courseContent) {
+        return next(new ErrorHandler(400, 'Invalid content ID 2'))
+      }
+
+      // create a new questions object
+      const newQuestions: any = {
+        user: req.user,
+        question,
+        questionReplies: [],
+      }
+
+      // add this question to our courseContent
+      courseContent.questions.push(newQuestions)
+
+      // save the updated course
+      await course?.save()
+
+      res.status(201).json({
+        success: true,
+        course,
       })
     } catch (error: any) {
       return next(new ErrorHandler(500, error.message))
