@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Reply Notification</title>
+    <style type="text/css">
+      /* Add your custom CSS styles here */
+      body {
+        margin: 0;
+        padding: 0;
+        min-width: 100%;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        background-color: #fafafa;
+        color: #222;
+      }
+
+      a {
+        color: #000;
+        text-decoration: none;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 15px;
+        text-align: center;
+        line-height: 1.25;
+      }
+
+      p {
+        margin-top: 0;
+        margin-bottom: 24px;
+      }
+
+      table td {
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>New Reply Notification</h1>
+    <p>Dear <%= name %>,</p>
+    <p>
+      We are pleased to inform you that a new reply has been added to your question in the course
+      content.
+    </p>
+    <p>Question Title: <%= title %></p>
+    <p>Please log in to the course platform to view the reply and continue the discussion.</p>
+    <p>Thank you for using our platform!</p>
+  </body>
+</html>

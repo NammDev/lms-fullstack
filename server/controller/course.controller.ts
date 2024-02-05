@@ -1,12 +1,13 @@
 import cloudinary from 'cloudinary'
 import { NextFunction, Request, Response } from 'express'
+import mongoose from 'mongoose'
 
 import { CatchAsyncError } from '../middleware/catchAsyncError'
 import ErrorHandler from '../utils/ErrorHandler'
 import { createCourse } from '../services/course.service'
 import courseModel from '../models/course.model'
 import { redis } from '../utils/redis'
-import mongoose from 'mongoose'
+import sendMail from '../utils/sendMail'
 
 require('dotenv').config()
 
@@ -184,6 +185,126 @@ export const addQuestion = CatchAsyncError(
         success: true,
         course,
       })
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message))
+    }
+  }
+)
+
+// add answer in course question
+interface IAddAnswerData {
+  answer: string
+  courseId: string
+  contentId: string
+  questionId: string
+}
+
+export const addAnswer = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { answer, courseId, contentId, questionId }: IAddAnswerData = req.body
+      const course = await courseModel.findById(courseId)
+
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return next(new ErrorHandler(400, 'Invalid content ID 1'))
+      }
+
+      const courseContent = course?.courseData.find((item: any) => item._id.equals(contentId))
+      if (!courseContent) {
+        return next(new ErrorHandler(400, 'Invalid content ID 2'))
+      }
+
+      const question = courseContent.questions.find((item: any) => item._id.equals(questionId))
+      if (!question) {
+        return next(new ErrorHandler(400, 'Invalid question ID'))
+      }
+
+      // create a new answer object
+      const newAnswer: any = {
+        user: req.user,
+        answer,
+      }
+
+      // add this answer to our course content (question)
+      question.questionReplies.push(newAnswer)
+
+      await course?.save()
+
+      if (req.user._id === question.user?._id) {
+        // create a notification
+      } else {
+        // send email to the user
+        const data = {
+          name: question.user.name,
+          title: courseContent.title,
+        }
+        try {
+          await sendMail({
+            email: question?.user.email,
+            subject: 'Question Reply',
+            template: 'question-reply.ejs',
+            data,
+          })
+        } catch (error: any) {
+          return next(new ErrorHandler(500, error.message))
+        }
+      }
+
+      res.status(200).json({
+        success: true,
+        course,
+      })
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message))
+    }
+  }
+)
+
+// add review in course
+interface IAddReviewData {
+  review: string
+  rating: number
+}
+
+export const addReview = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userCourseList = req.user?.courses
+      const courseId = req.params.id
+
+      // check if courseId already exist in userCourseList
+      const courseExist = userCourseList?.find((c: any) => c._id.toString() === courseId.toString())
+      if (!courseExist) {
+        return next(new ErrorHandler(400, 'You have not purchased this course'))
+      }
+
+      const course = await courseModel.findById(courseId)
+
+      const { review, rating }: IAddReviewData = req.body
+
+      const reviewData: any = {
+        user: req.user,
+        comment: review,
+        rating,
+      }
+      course?.reviews.push(reviewData)
+
+      // cal rating number based on review
+      let avg = 0
+      course?.reviews.forEach((rev: any) => {
+        avg += rev.rating
+      })
+      if (course) course.ratings = avg / course?.reviews.length
+
+      await course.save()
+
+      const notification = {
+        title: 'New Review Received',
+        message: `${req.user.name} has given a review on ${course.name}`,
+      }
+
+      // create notification
+      res.status(200).json({ success: true, course })
     } catch (error: any) {
       return next(new ErrorHandler(500, error.message))
     }

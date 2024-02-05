@@ -1,4 +1,9 @@
-import { addQuestion, getCourseByUser } from './../controller/course.controller'
+import {
+  addAnswer,
+  addQuestion,
+  addReview,
+  getCourseByUser,
+} from './../controller/course.controller'
 import express from 'express'
 import {
   editCourse,
@@ -17,5 +22,7 @@ courseRouter.get('/get-courses', getAllCourse)
 courseRouter.get('/get-course-content/:id', isAuthenticated, getCourseByUser)
 
 courseRouter.put('/add-question', isAuthenticated, addQuestion)
+courseRouter.put('/add-answer', isAuthenticated, addAnswer)
+courseRouter.put('/add-review/:id', isAuthenticated, addReview)
 
 export default courseRouter
