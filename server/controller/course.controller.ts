@@ -310,3 +310,33 @@ export const addReview = CatchAsyncError(
     }
   }
 )
+
+// add reply in review
+interface IAddReplyData {
+  comment: string
+  courseId: string
+  reviewId: string
+}
+
+export const addReply = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { comment, courseId, reviewId }: IAddReplyData = req.body
+    const course = await courseModel.findById(courseId)
+    if (!course) return next(new ErrorHandler(400, 'Invalid course ID'))
+
+    const review = course.reviews.find((item: any) => item._id.equals(reviewId))
+    if (!review) return next(new ErrorHandler(400, 'Invalid review ID'))
+
+    const replyData: any = {
+      user: req.user,
+      comment,
+    }
+    if (!review.commentReplies) review.commentReplies = []
+    review.commentReplies.push(replyData)
+    await course?.save()
+
+    res.status(200).json({ success: true, course })
+  } catch (error: any) {
+    return next(new ErrorHandler(500, error.message))
+  }
+})
