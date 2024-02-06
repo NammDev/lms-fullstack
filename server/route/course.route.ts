@@ -10,6 +10,7 @@ import {
   addReview,
   getAllCourses,
   getCourseByUser,
+  deleteCourse,
 } from '../controller/course.controller'
 import { authorizeRoles, isAuthenticated } from '../middleware/auth'
 
@@ -27,5 +28,6 @@ courseRouter.put('/add-review/:id', isAuthenticated, addReview)
 courseRouter.put('/add-reply', isAuthenticated, authorizeRoles('admin'), addReply)
 
 courseRouter.get('/get-all-courses', isAuthenticated, authorizeRoles('admin'), getAllCourses)
+courseRouter.delete('/delete-course/:id', isAuthenticated, authorizeRoles('admin'), deleteCourse)
 
 export default courseRouter
