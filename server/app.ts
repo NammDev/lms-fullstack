@@ -6,6 +6,7 @@ import userRouter from './route/user.route'
 
 import { ErrorMiddleware } from './middleware/error'
 import courseRouter from './route/course.route'
+import orderRouter from './route/order.route'
 
 export const app = express()
 
@@ -19,8 +20,7 @@ app.use(cookieParser())
 app.use(cors({ origin: process.env.ORIGIN }))
 
 // routes
-app.use('/api/v1', userRouter)
-app.use('/api/v1', courseRouter)
+app.use('/api/v1', userRouter, courseRouter, orderRouter)
 
 // testing api
 app.get('/test', (req, res, next) => {
