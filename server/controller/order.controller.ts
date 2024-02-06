@@ -75,7 +75,7 @@ export const createOrder = CatchAsyncError(
   }
 )
 
-// get all courses -- only for admin
+// get all orders -- only for admin
 export const getAllOrders = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {

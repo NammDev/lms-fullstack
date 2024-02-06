@@ -1,10 +1,3 @@
-import {
-  getUserInfo,
-  socialAuth,
-  updatePassword,
-  updateProfilePicture,
-  updateUserInfo,
-} from './../controller/user.controller'
 import express from 'express'
 import {
   activateUser,
@@ -12,6 +5,12 @@ import {
   logoutUser,
   registrationUser,
   updateAccessToken,
+  getAllUsers,
+  getUserInfo,
+  socialAuth,
+  updatePassword,
+  updateProfilePicture,
+  updateUserInfo,
 } from '../controller/user.controller'
 import { authorizeRoles, isAuthenticated } from '../middleware/auth'
 
@@ -29,5 +28,7 @@ userRouter.post('/social-auth', socialAuth)
 userRouter.put('/update-profile', isAuthenticated, updateUserInfo)
 userRouter.put('/update-password', isAuthenticated, updatePassword)
 userRouter.put('/update-avatar', isAuthenticated, updateProfilePicture)
+
+userRouter.get('/get-all-users', isAuthenticated, authorizeRoles('admin'), getAllUsers)
 
 export default userRouter
