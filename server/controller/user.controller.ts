@@ -1,17 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
-import userModel from '../models/user.model'
-import { IUser } from '../models/user.model'
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import cloudinary from 'cloudinary'
+require('dotenv').config()
+
 import ErrorHandler from '../utils/ErrorHandler'
 import { CatchAsyncError } from '../middleware/catchAsyncError'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import ejs from 'ejs'
-import path from 'path'
+
+import userModel from '../models/user.model'
 import sendMail from '../utils/sendMail'
 import { accessTokenOptions, refreshTokenOptions, sendToken } from '../utils/jwt'
 import { redis } from '../utils/redis'
 import { getUserById } from '../services/user.service'
-import cloudinary from 'cloudinary'
-require('dotenv').config()
 
 // register User
 interface IRegistrationBody {
@@ -20,7 +19,6 @@ interface IRegistrationBody {
   password: string
   avatar?: string
 }
-
 export const registrationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -63,7 +61,6 @@ interface IActivationToken {
   token: string
   activationCode: string
 }
-
 export const createActivationToken = (user: IRegistrationBody): IActivationToken => {
   const activationCode = Math.floor(1000 + Math.random() * 9000).toString()
   const token = jwt.sign(
@@ -82,7 +79,6 @@ interface IActivationRequest {
   activation_token: string
   activation_code: string
 }
-
 export const activateUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -123,7 +119,6 @@ interface ILoginRequest {
   email: string
   password: string
 }
-
 export const loginUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -8,6 +8,7 @@ import { createCourse } from '../services/course.service'
 import courseModel from '../models/course.model'
 import { redis } from '../utils/redis'
 import sendMail from '../utils/sendMail'
+import notificationModel from '../models/notification.model'
 
 require('dotenv').config()
 
@@ -152,7 +153,6 @@ interface IAddQuestionData {
   courseId: string
   contentId: string
 }
-
 export const addQuestion = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -178,6 +178,13 @@ export const addQuestion = CatchAsyncError(
       // add this question to our courseContent
       courseContent.questions.push(newQuestions)
 
+      // send notification to admin (hey, new question from user)
+      await notificationModel.create({
+        userId: req.user?._id,
+        title: 'New Question Received',
+        message: `Hey, you have new question in ${courseContent.title}`,
+      })
+
       // save the updated course
       await course?.save()
 
@@ -198,7 +205,6 @@ interface IAddAnswerData {
   contentId: string
   questionId: string
 }
-
 export const addAnswer = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -232,6 +238,11 @@ export const addAnswer = CatchAsyncError(
 
       if (req.user._id === question.user?._id) {
         // create a notification
+        await notificationModel.create({
+          userId: req.user._id,
+          title: 'New Question Reply Received',
+          message: `Hey, you have new reply in ${courseContent.title}`,
+        })
       } else {
         // send email to the user
         const data = {
@@ -265,7 +276,6 @@ interface IAddReviewData {
   review: string
   rating: number
 }
-
 export const addReview = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -317,7 +327,6 @@ interface IAddReplyData {
   courseId: string
   reviewId: string
 }
-
 export const addReply = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { comment, courseId, reviewId }: IAddReplyData = req.body
