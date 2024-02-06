@@ -348,3 +348,19 @@ export const getAllUsers = CatchAsyncError(
     }
   }
 )
+
+// update user role -- only for admin
+export const updateUserRole = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, role } = req.body
+      const user = await userModel.findByIdAndUpdate(id, { role }, { new: true })
+      res.status(201).json({
+        success: true,
+        user,
+      })
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message))
+    }
+  }
+)
