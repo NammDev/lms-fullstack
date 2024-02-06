@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 
 import { CatchAsyncError } from '../middleware/catchAsyncError'
 import ErrorHandler from '../utils/ErrorHandler'
-import { createCourse } from '../services/course.service'
+import { createCourse, getAllCoursesService } from '../services/course.service'
 import courseModel from '../models/course.model'
 import { redis } from '../utils/redis'
 import sendMail from '../utils/sendMail'
@@ -349,3 +349,14 @@ export const addReply = CatchAsyncError(async (req: Request, res: Response, next
     return next(new ErrorHandler(500, error.message))
   }
 })
+
+// get all courses -- only for admin
+export const getAllCourses = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllCoursesService(res)
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message))
+    }
+  }
+)

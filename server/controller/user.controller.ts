@@ -10,7 +10,7 @@ import userModel from '../models/user.model'
 import sendMail from '../utils/sendMail'
 import { accessTokenOptions, refreshTokenOptions, sendToken } from '../utils/jwt'
 import { redis } from '../utils/redis'
-import { getUserById } from '../services/user.service'
+import { getAllUsersService, getUserById } from '../services/user.service'
 
 // register User
 interface IRegistrationBody {
@@ -334,6 +334,17 @@ export const updateProfilePicture = CatchAsyncError(
       })
     } catch (error: any) {
       return next(new ErrorHandler(400, error.message))
+    }
+  }
+)
+
+// get all users -- only for admin
+export const getAllUsers = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllUsersService(res)
+    } catch (error: any) {
+      return next(new ErrorHandler(500, error.message))
     }
   }
 )
