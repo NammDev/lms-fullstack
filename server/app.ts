@@ -9,6 +9,7 @@ import userRouter from './route/user.route'
 import courseRouter from './route/course.route'
 import orderRouter from './route/order.route'
 import notificationRouter from './route/notification.route'
+import analyticsRouter from './route/analytic.route'
 
 export const app = express()
 
@@ -22,7 +23,7 @@ app.use(cookieParser())
 app.use(cors({ origin: process.env.ORIGIN }))
 
 // routes
-app.use('/api/v1', userRouter, courseRouter, orderRouter, notificationRouter)
+app.use('/api/v1', userRouter, courseRouter, orderRouter, notificationRouter, analyticsRouter)
 
 // testing api
 app.get('/test', (req, res, next) => {
