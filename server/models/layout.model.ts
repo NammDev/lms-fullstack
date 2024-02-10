@@ -5,7 +5,7 @@ export interface FaqItem extends Document {
   answer: string
 }
 
-interface Category extends Document {
+export interface Category extends Document {
   title: string
 }
 
