@@ -53,3 +53,24 @@ export const createLayout = CatchAsyncError(
     }
   }
 )
+
+// edit layout
+export const editLayout = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { type } = req.body
+
+      if (type === 'Banner') {
+        const bannerData: any = await layoutModel.findOne({ type: 'Banner' })
+        if (bannerData) await cloudinary.v2.uploader.destroy(bannerData.image.public_id)
+
+        const { image, title, subTitle } = req.body
+      } else if (type === 'Faq') {
+      } else if (type === 'Categories') {
+      }
+      res.status(200).json({ success: true, message: 'Layout created successfully' })
+    } catch (error: any) {
+      next(new ErrorHandler(500, error.message))
+    }
+  }
+)
