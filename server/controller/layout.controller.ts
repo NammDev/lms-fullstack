@@ -65,8 +65,6 @@ export const editLayout = CatchAsyncError(
         if (bannerData) await cloudinary.v2.uploader.destroy(bannerData.image.public_id)
 
         const { image, title, subTitle } = req.body
-
-        // edit banner data: change Image, title, subtitle
       } else if (type === 'Faq') {
       } else if (type === 'Categories') {
       }
