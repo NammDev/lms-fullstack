@@ -10,7 +10,7 @@ import courseRouter from './route/course.route'
 import orderRouter from './route/order.route'
 import notificationRouter from './route/notification.route'
 import analyticsRouter from './route/analytic.route'
-import { createLayout } from './controller/layout.controller'
+import layoutRouter from './route/layout.route'
 
 export const app = express()
 
@@ -31,7 +31,7 @@ app.use(
   orderRouter,
   notificationRouter,
   analyticsRouter,
-  createLayout
+  layoutRouter
 )
 
 // testing api
