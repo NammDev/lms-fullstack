@@ -13,6 +13,7 @@ const Page = (props: Props) => {
         keywords='programming,nextjs,mern,react,reactjs'
       />
       <h1>Page</h1>
+      <p>Hello</p>
     </div>
   )
 }
