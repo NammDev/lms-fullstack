@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Header from '../components/Header'
 import Heading from '../utils/Heading'
+import Hero from '@/components/layout/Hero'
 
 interface Props {}
 
@@ -17,6 +18,7 @@ const Page = (props: Props) => {
         keywords='programming,nextjs,mern,react,reactjs'
       />
       <Header open={open} setOpen={setOpen} activeItem={activeItem} />
+      <Hero />
     </div>
   )
 }
