@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Header from './components/Header'
-import Heading from './utils/Heading'
+import Header from '../components/Header'
+import Heading from '../utils/Heading'
 
 interface Props {}
 
