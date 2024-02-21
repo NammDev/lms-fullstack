@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Header from '../components/Header'
-import Heading from '../utils/Heading'
+import Heading from '../components/utils/Heading'
 import Hero from '@/components/layout/Hero'
 
 interface Props {}

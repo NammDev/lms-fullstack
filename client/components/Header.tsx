@@ -3,12 +3,12 @@
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import NavItems from '../utils/NavItem'
-import { ThemeSwitcher } from '../utils/ThemeSwitcher'
+import NavItems from './utils/NavItem'
+import { ThemeSwitcher } from './utils/ThemeSwitcher'
 import Image from 'next/image'
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from 'react-icons/hi'
 import avatar from '@/public/assests/avatar.png'
-import CustomModal from '@/utils/CustomModal'
+import CustomModal from '@/components/utils/CustomModal'
 import Login from './auth/Login'
 
 type Props = {
