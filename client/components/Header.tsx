@@ -8,14 +8,18 @@ import { ThemeSwitcher } from '../utils/ThemeSwitcher'
 import Image from 'next/image'
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from 'react-icons/hi'
 import avatar from '@/public/assests/avatar.png'
+import CustomModal from '@/utils/CustomModal'
+import Login from './auth/Login'
 
 type Props = {
   open: boolean
   setOpen: (open: boolean) => void
   activeItem: number
+  route: string
+  setRoute: (route: string) => void
 }
 
-const Header = ({ open, setOpen, activeItem }: Props) => {
+const Header = ({ open, setOpen, activeItem, route, setRoute }: Props) => {
   const [active, setActive] = useState(false)
   const [openSidebar, setOpenSidebar] = useState(false)
 
@@ -126,6 +130,48 @@ const Header = ({ open, setOpen, activeItem }: Props) => {
           </div>
         )}
       </div>
+
+      {route === 'Login' && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              component={Login}
+              // refetch={refetch}
+            />
+          )}
+        </>
+      )}
+
+      {/* {route === 'Sign-Up' && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={SignUp}
+            />
+          )}
+        </>
+      )}
+
+      {route === 'Verification' && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Verification}
+            />
+          )}
+        </>
+      )} */}
     </div>
   )
 }

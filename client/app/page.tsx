@@ -10,6 +10,8 @@ interface Props {}
 const Page = (props: Props) => {
   const [open, setOpen] = useState(false)
   const [activeItem, setActiveItem] = useState(0)
+  const [route, setRoute] = useState('Login')
+
   return (
     <div>
       <Heading
@@ -17,7 +19,13 @@ const Page = (props: Props) => {
         description='E-Learning is a platform for students to learn and get help from teachers'
         keywords='programming,nextjs,mern,react,reactjs'
       />
-      <Header open={open} setOpen={setOpen} activeItem={activeItem} />
+      <Header
+        open={open}
+        setOpen={setOpen}
+        activeItem={activeItem}
+        route={route}
+        setRoute={setRoute}
+      />
       <Hero />
     </div>
   )
